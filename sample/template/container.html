@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    {% block before_head %} {% endblock %}
+    {% include "template/header.html" %}
+    {% block head %} {% endblock %}
+    </head>
+<body>
+    <!-- top -->
+    {% include "template/page_title.html" %}
+    <!-- top end -->
+    <!-- main -->
+	<div class="main">
+		<!-- subnav -->
+        {% include "template/sidebar.html" %}
+		<!-- subnav end -->
+		<!-- content -->
+        {% block body %} {% endblock %}
+		<!-- content end -->
+	</div>
+	<!-- main end -->
+    {% block javascript %}{% endblock %}
+</body>
+</html>
