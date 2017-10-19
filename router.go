@@ -71,13 +71,15 @@ func (rt *router) wrapHandle(handles ...HandlerFunc) httprouter.Handle {
 		tmpHandle.UseFunc(wrapHandlerFunc(v))
 	}
 
-	handle := func(c *Context) {
-		tmpHandle.ServeHTTP(c, c.Request())
-	}
+	//handle := func(c *Context) {
+	//	tmpHandle.ServeHTTP(c, c.Request())
+	//}
 
 	return func(wr http.ResponseWriter, r *http.Request, params httprouter.Params) {
 		r = mapContextFilter(wr, r, params)
-		handle(newContext(wr, r, nil))
+
+		tmpHandle.ServeHTTP(wr, r)
+		//handle(newContext(wr, r, nil))
 	}
 }
 

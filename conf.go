@@ -31,7 +31,7 @@ func InitByConf(path string) ConfKelly {
 		Port: 9090,
 		Host: "127.0.0.1",
 	}
-	if err := jsonConfToStruct(path, conf); err != nil {
+	if err := JsonConfToStruct(path, conf); err != nil {
 		panic(err)
 	}
 

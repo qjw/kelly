@@ -28,7 +28,7 @@ func filterFlags(content string) string {
 	return content
 }
 
-func jsonConfToStruct(path string, obj interface{}) error {
+func JsonConfToStruct(path string, obj interface{}) error {
 	file, err := ioutil.ReadFile(path)
 	if err != nil {
 		return err
