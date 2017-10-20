@@ -34,3 +34,10 @@ func WriteJSON(w http.ResponseWriter, code int, obj interface{}) error {
 	w.WriteHeader(code)
 	return json.NewEncoder(w).Encode(obj)
 }
+
+func WriteRawJSON(w http.ResponseWriter, code int, content []byte) error {
+	writeContentType(w, jsonContentType)
+	w.WriteHeader(code)
+	w.Write(content)
+	return nil
+}

@@ -28,6 +28,8 @@ type renderOp interface {
 	WriteString(int, string, ...interface{})
 	// 返回二进制数据
 	WriteData(int, string, []byte)
+	// 返回紧凑的json，直接从二进制读数据
+	WriteRawJson(int, []byte)
 	// 返回重定向
 	Redirect(int, string)
 	// 设置header
@@ -82,6 +84,12 @@ func (r *renderImp) SetHeader(key, value string) {
 
 func (r *renderImp) WriteJson(code int, obj interface{}) {
 	if err := render.WriteJSON(r, code, obj); err != nil {
+		panic(err)
+	}
+}
+
+func (r *renderImp) WriteRawJson(code int, content []byte) {
+	if err := render.WriteRawJSON(r, code, content); err != nil {
 		panic(err)
 	}
 }
