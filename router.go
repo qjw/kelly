@@ -231,6 +231,9 @@ func (rt *router) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 func (rt *router) Group(path string, handlers ...HandlerFunc) Router {
 	rt.validatePath(path)
+	if path == "/" {
+		path = ""
+	}
 	newRt := &router{
 		rt:           rt.rt,
 		path:         path,

@@ -126,8 +126,8 @@ func InitApiV1(r kelly.Router, store sessions.Store) {
 			c.Redirect(http.StatusFound, "/api/v1/")
 		})
 
-	api.GET("/logout",
-		sessions.LoginRequired(),
+	api2 := api.Group("/",sessions.LoginRequired())
+	api2.GET("/logout",
 		func(c *kelly.Context) {
 			// 注销登录
 			sessions.Logout(c)

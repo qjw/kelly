@@ -18,6 +18,7 @@
       * [全局中间件](#全局中间件)
       * [动态添加中间件](#动态添加中间件)
       * [多级路由](#多级路由)
+      * [空路由](#空路由)
       * [单个API中间件注入](#单个api中间件注入)
       * [其他Http方法](#其他http方法)
       * [处理404/405](#处理404405)
@@ -537,6 +538,34 @@ sar.GET("/", func(c *kelly.Context) {
 })
 ```
 
+## 空路由
+
+空路由指在创建子路由（Group）时，使用路径"/"的路由，返回的新路由和父路由使用相同的路径
+
+空路由的好处是可以针对同一个url的不同请求，使用不同的中间件
+
+> 假如/api/v1一部分不需要登录，剩下的则需要。正常情况下，需要对需要登录的请求每个都加入中间件进行认证，而空路由则可以只注册一次中间件，需要登录的请求都基于这个空路由来注册。
+
+``` go
+api.GET("/login",
+    func(c *kelly.Context) {
+        // 登录授权
+        sessions.Login(c, &User{
+            Id:   1,
+            Name: c.GetDefaultQueryVarible("name", "p1"),
+        })
+        c.Redirect(http.StatusFound, "/api/v1/")
+    })
+
+api2 := api.Group("/",sessions.LoginRequired())
+api2.GET("/logout",
+    func(c *kelly.Context) {
+        // 注销登录
+        sessions.Logout(c)
+        c.WriteJson(http.StatusFound, "/logout")
+    })
+```
+
 ## 单个API中间件注入
 
 > 下面的代码，通过一个中间件作登录认证
@@ -671,9 +700,14 @@ type BindJsonObj struct {
 
 > 自动绑定可以减少非常多拖沓的重复代码
 
+**注意，可以在bind时设置缺省参数**
+
 ``` go
 api.GET("/path2/:aaa/:bbb/:ccc",
-    kelly.BindPathMiddleware(&BindPathObj{}),
+    kelly.BindPathMiddleware(&BindPathObj{
+        AAA: "testa",
+        BBB: "testb",
+    }),
     func(c *kelly.Context) {
         c.WriteJson(http.StatusOK, c.GetBindPathParameter())
     })

@@ -11,16 +11,16 @@ import (
 )
 
 type BindPathObj struct {
-	A string `json:"aaa,omitempty" binding:"required,max=32,min=6" error:"aerror"`
-	B string `json:"bbb,omitempty" binding:"required,max=32,min=6" error:"berror"`
-	C string `json:"ccc,omitempty" binding:"required,max=32,min=6" error:"cerror"`
+	A string `json:"aaa,omitempty" binding:"required,max=32,min=1" error:"aerror"`
+	B string `json:"bbb,omitempty" binding:"required,max=32,min=1" error:"berror"`
+	C string `json:"ccc,omitempty" binding:"required,max=32,min=1" error:"cerror"`
 }
 
 type BindJsonObj struct {
 	Obj1 BindPathObj `json:"obj,omitempty"`
-	A    string      `json:"aaa,omitempty" binding:"required,max=32,min=6" error:"aerror"`
-	B    string      `json:"bbb,omitempty" binding:"required,max=32,min=6" error:"berror"`
-	C    string      `json:"ccc,omitempty" binding:"required,max=32,min=6" error:"cerror"`
+	A    string      `json:"aaa,omitempty" binding:"required,max=32,min=1" error:"aerror"`
+	B    string      `json:"bbb,omitempty" binding:"required,max=32,min=1" error:"berror"`
+	C    string      `json:"ccc,omitempty" binding:"required,max=32,min=1" error:"cerror"`
 }
 
 func InitBinding(r kelly.Router) {
@@ -49,7 +49,10 @@ func InitBinding(r kelly.Router) {
 		}
 	})
 	api.GET("/query2",
-		kelly.BindMiddleware(&BindPathObj{}),
+		kelly.BindMiddleware(&BindPathObj{
+			A:"dft a",
+			B:"dft b",
+		}),
 		func(c *kelly.Context) {
 			c.WriteJson(http.StatusOK, c.GetBindParameter())
 		})
