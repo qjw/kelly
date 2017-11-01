@@ -138,8 +138,9 @@ func (b *binderImp) GetBindPathParameter() interface{} {
 	return b.c.MustGet(contextBindPathKey)
 }
 
-func BindMiddleware(obj interface{}) HandlerFunc {
+func BindMiddleware(objG func()interface{}) HandlerFunc {
 	return func(c *Context) {
+		obj := objG()
 		err, msgs := c.Bind(obj)
 		if err == nil {
 			c.Set(contextBindKey, obj)
@@ -150,8 +151,9 @@ func BindMiddleware(obj interface{}) HandlerFunc {
 	}
 }
 
-func BindJsonMiddleware(obj interface{}) HandlerFunc {
+func BindJsonMiddleware(objG func()interface{}) HandlerFunc {
 	return func(c *Context) {
+		obj := objG()
 		err, msgs := c.BindJson(obj)
 		if err == nil {
 			c.Set(contextBindJsonKey, obj)
@@ -162,8 +164,9 @@ func BindJsonMiddleware(obj interface{}) HandlerFunc {
 	}
 }
 
-func BindXmlMiddleware(obj interface{}) HandlerFunc {
+func BindXmlMiddleware(objG func()interface{}) HandlerFunc {
 	return func(c *Context) {
+		obj := objG()
 		err, msgs := c.BindXml(obj)
 		if err == nil {
 			c.Set(contextBindXmlKey, obj)
@@ -174,8 +177,9 @@ func BindXmlMiddleware(obj interface{}) HandlerFunc {
 	}
 }
 
-func BindFormMiddleware(obj interface{}) HandlerFunc {
+func BindFormMiddleware(objG func()interface{}) HandlerFunc {
 	return func(c *Context) {
+		obj := objG()
 		err, msgs := c.BindForm(obj)
 		if err == nil {
 			c.Set(contextBindFormKey, obj)
@@ -186,8 +190,9 @@ func BindFormMiddleware(obj interface{}) HandlerFunc {
 	}
 }
 
-func BindPathMiddleware(obj interface{}) HandlerFunc {
+func BindPathMiddleware(objG func()interface{}) HandlerFunc {
 	return func(c *Context) {
+		obj := objG()
 		err, msgs := c.BindPath(obj)
 		if err == nil {
 			c.Set(contextBindPathKey, obj)

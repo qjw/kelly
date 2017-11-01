@@ -35,7 +35,7 @@ func InitBinding(r kelly.Router) {
 		}
 	})
 	api.GET("/path2/:aaa/:bbb/:ccc",
-		kelly.BindPathMiddleware(&BindPathObj{}),
+		kelly.BindPathMiddleware(func() interface{} { return &BindPathObj{} }),
 		func(c *kelly.Context) {
 			c.WriteJson(http.StatusOK, c.GetBindPathParameter())
 		})
@@ -49,9 +49,11 @@ func InitBinding(r kelly.Router) {
 		}
 	})
 	api.GET("/query2",
-		kelly.BindMiddleware(&BindPathObj{
-			A:"dft a",
-			B:"dft b",
+		kelly.BindMiddleware(func() interface{} {
+			return &BindPathObj{
+				A: "dft a",
+				B: "dft b",
+			}
 		}),
 		func(c *kelly.Context) {
 			c.WriteJson(http.StatusOK, c.GetBindParameter())
@@ -168,12 +170,12 @@ $(function() {
 	})
 
 	api.POST("/form2",
-		kelly.BindMiddleware(&BindPathObj{}),
+		kelly.BindMiddleware(func() interface{} { return &BindPathObj{} }),
 		func(c *kelly.Context) {
 			c.WriteJson(http.StatusOK, c.GetBindParameter())
 		})
 	api.POST("/json2",
-		kelly.BindMiddleware(&BindJsonObj{}),
+		kelly.BindMiddleware(func() interface{} { return &BindJsonObj{} }),
 		func(c *kelly.Context) {
 			c.WriteJson(http.StatusOK, c.GetBindParameter())
 		})

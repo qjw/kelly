@@ -704,20 +704,20 @@ type BindJsonObj struct {
 
 ``` go
 api.GET("/path2/:aaa/:bbb/:ccc",
-    kelly.BindPathMiddleware(&BindPathObj{
+    kelly.BindPathMiddleware(func() interface{} { return &BindPathObj{
         AAA: "testa",
         BBB: "testb",
-    }),
+    }}),
     func(c *kelly.Context) {
         c.WriteJson(http.StatusOK, c.GetBindPathParameter())
     })
 api.POST("/form2",
-    kelly.BindMiddleware(&BindPathObj{}),
+    kelly.BindMiddleware(func() interface{} { return &BindPathObj{}}),
     func(c *kelly.Context) {
         c.WriteJson(http.StatusOK, c.GetBindParameter())
     })
 api.POST("/json2",
-    kelly.BindMiddleware(&BindJsonObj{}),
+    kelly.BindMiddleware(func() interface{} { return &BindJsonObj{}}),
     func(c *kelly.Context) {
         c.WriteJson(http.StatusOK, c.GetBindParameter())
     })
@@ -734,19 +734,17 @@ GetBindPathParameter() interface{}
 > 本质上就是将原来每个接口都需要写的重复逻辑抽象到中间件，并且通过Context传递
 
 ``` go
-func BindMiddleware(obj interface{}) HandlerFunc {
-    return func(c *Context) {
-        // 绑定对象
-        err, msgs := c.Bind(obj)
-        if err == nil {
-            // 使用一个固定的key存储到request的Context中
-            c.Set(contextBindKey, obj)
-            // 继续
-            c.InvokeNext()
-        } else {
-            handleValidateErr(c, err, msgs, obj)
-        }
-    }
+func BindMiddleware(objG func()interface{}) HandlerFunc {
+	return func(c *Context) {
+		obj := objG()
+		err, msgs := c.Bind(obj)
+		if err == nil {
+			c.Set(contextBindKey, obj)
+			c.InvokeNext()
+		} else {
+			handleValidateErr(c, err, msgs, obj)
+		}
+	}
 }
 ```
 
