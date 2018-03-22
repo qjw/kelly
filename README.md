@@ -9,6 +9,7 @@
          * [获取Cookie](#获取cookie)
       * [文件上传](#文件上传)
    * [静态文件](#静态文件)
+   * [打包资源](#打包资源)
    * [输出](#输出)
       * [重定向](#重定向)
       * [设置Header](#设置header)
@@ -365,6 +366,31 @@ type StaticConfig struct {
 
 1. <https://github.com/urfave/negroni/blob/master/static.go>
 1. <https://github.com/labstack/echo/blob/master/middleware/static.go>
+
+# 打包资源
+打包依赖于[go-bindata-assetfs](https://github.com/elazarl/go-bindata-assetfs)
+
+假如前端资源放在frontend目录
+``` bash
+# target/bindata.go 表示生成的文件位置
+# router指定文件的package
+go-bindata-assetfs -o target/bindata.go -pkg router ./frontend/...
+```
+
+然后可以
+``` go
+r.GET("/frontend/*path", func() func(*kelly.Context) {
+	fs := &assetfs.AssetFS{Asset: Asset, AssetDir: AssetDir, AssetInfo: AssetInfo, Prefix: ""}
+	h := http.FileServer(fs)
+	return func(c *kelly.Context) {
+		h.ServeHTTP(c, c.Request())
+	}
+}())
+```
+由于挂载的是一个子Path，若使用下面的简洁方式，会404
+``` go
+http.Handle("/", http.FileServer(assetFS()))
+```
 
 # 输出
 ``` go
