@@ -59,6 +59,7 @@ func Gzip(level int, method int) kelly.HandlerFunc {
 
 	return func(c *kelly.Context) {
 		if !shouldCompress(c.Request(), methodStr) {
+			c.InvokeNext()
 			return
 		}
 
