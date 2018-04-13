@@ -6,6 +6,8 @@
 package kelly
 
 import (
+	"bytes"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -30,8 +32,13 @@ func (c *Context) Request() *http.Request {
 	return c.r
 }
 
+func (c *Context) SetBody(body []byte) {
+	c.r.Body.Close()
+	c.r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+}
+
 // 重置request，用于支持context库补充额外value
-func (c *Context) SetRequest(r *http.Request){
+func (c *Context) SetRequest(r *http.Request) {
 	c.r = r
 	// 无须更新dataContext，因为后者不依赖于context库，而是map实现
 }

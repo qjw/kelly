@@ -15,6 +15,7 @@
       * [设置Header](#设置header)
       * [设置Cookie](#设置cookie)
    * [Context数据](#context数据)
+      * [重建Body](#重建Body)
    * [中间件 middleware](#中间件-middleware)
       * [全局中间件](#全局中间件)
       * [动态添加中间件](#动态添加中间件)
@@ -24,6 +25,7 @@
       * [其他Http方法](#其他http方法)
       * [处理404/405](#处理404405)
       * [重置Request](#重置request)
+      * [重建Body](#重建Body-1)
    * [数据绑定和校验](#数据绑定和校验)
       * [手动绑定](#手动绑定)
       * [校验规则](#校验规则)
@@ -488,6 +490,20 @@ Get(interface{}) interface{}
 MustGet(interface{}) interface{}
 ```
 
+## 重建Body
+某些情况下，Middleware的一些操作依赖body，而body一旦读完就不会再有，这时可以通过Context将Body内容传递给后续handle。
+
+或者纯http库/c.SetBody来重建body，这种方案的好处是，后续handle对此透明，无需特殊处理
+``` go
+bodyBytes, _ := ioutil.ReadAll(req.Body)
+c.SetBody(bodyBytes)
+```
+``` go
+bodyBytes, _ := ioutil.ReadAll(req.Body)
+req.Body.Close()
+req.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
+```
+
 # 中间件 middleware
 
 一个最简单的中间件实现
@@ -650,6 +666,12 @@ SetMethodNotAllowedHandle(HandlerFunc)
 
 ``` go
 func (c *Context) SetRequest(r *http.Request){
+```
+
+## 重建Body
+``` go
+bodyBytes, _ := ioutil.ReadAll(req.Body)
+c.SetBody(bodyBytes)
 ```
 
 # 数据绑定和校验
