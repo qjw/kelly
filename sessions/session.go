@@ -59,3 +59,8 @@ func SessionMiddleware(store Store, key string) kelly.HandlerFunc {
 		c.InvokeNext()
 	}
 }
+
+func GetSession(c *kelly.Context) Session {
+	// 从Context获得session的实例
+	return c.MustGet("session").(Session)
+}
