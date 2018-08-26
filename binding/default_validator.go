@@ -6,9 +6,12 @@
 package binding
 
 import (
-	"gopkg.in/go-playground/validator.v9"
+	"context"
 	"reflect"
+	"regexp"
 	"sync"
+
+	"gopkg.in/go-playground/validator.v9"
 )
 
 type defaultValidator struct {
@@ -28,12 +31,15 @@ func (v *defaultValidator) ValidateStruct(obj interface{}) error {
 	return nil
 }
 
-/*
-func isAlpha(ctx context.Context, fl validator.FieldLevel) bool {
+func isDate(ctx context.Context, fl validator.FieldLevel) bool {
 	alphaRegex := regexp.MustCompile("^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
 	return alphaRegex.MatchString(fl.Field().String())
 }
-*/
+
+func isDatetime(ctx context.Context, fl validator.FieldLevel) bool {
+	alphaRegex := regexp.MustCompile("^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$")
+	return alphaRegex.MatchString(fl.Field().String())
+}
 
 func (v *defaultValidator) lazyinit() {
 	v.once.Do(func() {
@@ -41,7 +47,8 @@ func (v *defaultValidator) lazyinit() {
 		// v.validate = validator.New(config)
 		v.validate = validator.New()
 		v.validate.SetTagName("binding")
-		// v.validate.RegisterValidationCtx("date", isAlpha)
+		v.validate.RegisterValidationCtx("date", isDate)
+		v.validate.RegisterValidationCtx("datetime", isDatetime)
 	})
 }
 
