@@ -7,10 +7,11 @@ package kelly
 
 import (
 	"encoding/xml"
-	"github.com/qjw/kelly/render"
 	"html/template"
 	"net/http"
 	"net/url"
+
+	"github.com/qjw/kelly/render"
 )
 
 type renderOp interface {
@@ -48,6 +49,8 @@ type renderOp interface {
 
 type renderImp struct {
 	http.ResponseWriter
+	http.Hijacker
+	http.Flusher
 	c *Context
 }
 
@@ -186,6 +189,8 @@ func (r *renderImp) ResponseStatusInternalServerError(err error) {
 func newRender(c *Context) renderOp {
 	return &renderImp{
 		ResponseWriter: c,
+		Hijacker:       c,
+		Flusher:        c,
 		c:              c,
 	}
 }

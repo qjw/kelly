@@ -28,12 +28,20 @@ func (v *defaultValidator) ValidateStruct(obj interface{}) error {
 	return nil
 }
 
+/*
+func isAlpha(ctx context.Context, fl validator.FieldLevel) bool {
+	alphaRegex := regexp.MustCompile("^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
+	return alphaRegex.MatchString(fl.Field().String())
+}
+*/
+
 func (v *defaultValidator) lazyinit() {
 	v.once.Do(func() {
 		// config := &validator.Config{TagName: "binding"}
 		// v.validate = validator.New(config)
 		v.validate = validator.New()
 		v.validate.SetTagName("binding")
+		// v.validate.RegisterValidationCtx("date", isAlpha)
 	})
 }
 

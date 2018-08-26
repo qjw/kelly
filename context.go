@@ -13,6 +13,8 @@ import (
 
 type Context struct {
 	http.ResponseWriter
+	http.Hijacker
+	http.Flusher
 	r *http.Request
 
 	// 下一个处理逻辑，用于middleware
@@ -54,6 +56,8 @@ func (c *Context) InvokeNext() {
 func newContext(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) *Context {
 	c := &Context{
 		ResponseWriter: w,
+		Hijacker:       w.(http.Hijacker),
+		Flusher:        w.(http.Flusher),
 		r:              r,
 		next:           next,
 		dataContext:    newMapHttpContext(r),
