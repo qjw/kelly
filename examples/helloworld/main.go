@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/qjw/kelly"
 	"net/http"
+
+	"github.com/qjw/kelly"
 )
 
 func main() {

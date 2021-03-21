@@ -2,10 +2,11 @@ package main
 
 import (
 	"errors"
-	"github.com/qjw/kelly"
 	"html/template"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/qjw/kelly"
 )
 
 func main() {
