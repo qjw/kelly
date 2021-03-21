@@ -84,14 +84,14 @@ func newMapContext() dataContext {
 	return c
 }
 
-func mapContextFilter(_ http.ResponseWriter, r *http.Request, params httprouter.Params) *http.Request{
+func mapContextFilter(_ http.ResponseWriter, r *http.Request, params httprouter.Params) *http.Request {
 	contextMap := contextMap{
 		pathParamID: params,
 	}
 	return contextSet(r, contextKey, contextMap)
 }
 
-func getPathParams(r *http.Request) httprouter.Params{
+func getPathParams(r *http.Request) httprouter.Params {
 	datas := contextMustGet(r, contextKey).(contextMap)
 	return datas[pathParamID].(httprouter.Params)
 }

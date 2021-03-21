@@ -7,9 +7,10 @@ package kelly
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/julienschmidt/httprouter"
 	"github.com/urfave/negroni"
-	"net/http"
 )
 
 type Router interface {
@@ -275,7 +276,6 @@ func (rt *router) GlobalAnnotation(handles ...AnnotationHandlerFunc) (r Router) 
 	r = rt
 	if DebugFlag && len(handles) == 0 {
 		panic("EndPointHandlerFunc at list one")
-		return
 	}
 
 	if len(rt.epMiddlewares) == 0 {
